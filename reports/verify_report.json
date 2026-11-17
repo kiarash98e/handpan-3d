@@ -1,0 +1,99 @@
+{
+  "glb": "output/HANDPAN/handpan.glb",
+  "bytes": 55140,
+  "dimensions_m": {
+    "x": 0.53,
+    "y": 0.53,
+    "z": 0.2398,
+    "min_z": 0.0
+  },
+  "triangles": 25776,
+  "objects": [
+    {
+      "name": "Handpan_Body",
+      "triangles": 23472,
+      "color_attributes": [
+        "Color"
+      ],
+      "materials": [
+        {
+          "name": "MAT_Handpan_NitridedSteel",
+          "metallic": 0.88,
+          "roughness": 0.4,
+          "base_color": "linked:ATTRIBUTE"
+        }
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "Handpan_RimBand",
+      "triangles": 2304,
+      "color_attributes": [],
+      "materials": [
+        {
+          "name": "MAT_Handpan_RimBand",
+          "metallic": 0.75,
+          "roughness": 0.48,
+          "base_color": [
+            0.04,
+            0.034,
+            0.03
+          ]
+        }
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "gltf_materials": [
+    {
+      "doubleSided": true,
+      "name": "MAT_Handpan_NitridedSteel",
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.8799999952316284,
+        "roughnessFactor": 0.4000000059604645
+      }
+    },
+    {
+      "name": "MAT_Handpan_RimBand",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.03999999910593033,
+          0.03400000184774399,
+          0.029999999329447746,
+          1
+        ],
+        "metallicFactor": 0.75,
+        "roughnessFactor": 0.47999998927116394
+      }
+    }
+  ],
+  "checks": {
+    "diameter_ok": true,
+    "height_ok": true,
+    "base_on_ground": true,
+    "tris_ok": true,
+    "size_ok": true,
+    "draco": true,
+    "vertex_colors": true,
+    "materials": true
+  },
+  "all_ok": true
+}

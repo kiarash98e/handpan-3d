@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Handpan 3D</title>
+<meta name="description" content="مدل سه‌بعدی هنگ‌درام (هندپن) — GLB بهینه برای وب">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #f4ede3;
+    --ink-soft: rgba(244, 237, 227, 0.7);
+    --panel: rgba(24, 20, 16, 0.6);
+    --line: rgba(210, 170, 115, 0.35);
+    --bronze: #d2aa73;
+    --bg: #1b1814;
+    --gutter: 16px;
+    --radius: 14px;
+    --font: "Vazirmatn", Tahoma, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); }
+  body { background: radial-gradient(120% 90% at 50% 38%, #3a312a 0%, #1e1915 55%, #0e0c0a 100%); }
+  canvas#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: grab; }
+  canvas#view:active { cursor: grabbing; }
+  canvas#view:focus-visible { box-shadow: inset 0 0 0 3px var(--bronze); }
+  .card { position: fixed; top: var(--gutter); right: var(--gutter); max-width: calc(100% - 2 * var(--gutter));
+          padding: 10px 14px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(10px); }
+  .card h1 { margin: 0; font-size: 18px; font-weight: 500; }
+  .card p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); }
+  .hint { position: fixed; bottom: var(--gutter); left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 2 * var(--gutter));
+          padding: 8px 12px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); font-size: 13px; color: var(--ink-soft); text-align: center; }
+  .reset { position: fixed; bottom: calc(var(--gutter) + 48px); left: var(--gutter); min-height: 44px; padding: 0 14px; border-radius: 12px;
+           border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+  .reset:hover { border-color: var(--bronze); }
+  :focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+  .overlay { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 10; padding: var(--gutter); text-align: center; }
+  .overlay[hidden] { display: none; }
+  .overlay h2 { margin: 0 0 6px; font-weight: 500; font-size: 22px; }
+  .overlay p { margin: 6px auto; max-width: 440px; line-height: 1.6; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .overlay code { direction: ltr; unicode-bidi: embed; display: inline-block; padding: 4px 8px; border-radius: 6px; background: rgba(244, 237, 227, 0.08); font-size: 13px; }
+  .bar { width: min(300px, 80vw); height: 3px; margin: 16px auto 6px; background: rgba(244, 237, 227, 0.15); border-radius: 2px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--bronze); transition: width 200ms; }
+  .retry { margin-top: 12px; min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--bronze); background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+  @media (max-width: 480px) { .card h1 { font-size: 16px; } .hint { font-size: 12px; border-radius: 12px; } }
+  @media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="view" tabindex="0" aria-label="نمای سه‌بعدی هنگ‌درام. برای چرخاندن بکشید، برای بزرگ‌نمایی اسکرول یا دو انگشت."></canvas>
+
+<header class="card">
+  <h1>هنگ‌درام · Handpan</h1>
+  <p>قطر ۵۳ سانتی‌متر · ارتفاع ۲۴ سانتی‌متر · دینگ + ۸ نت</p>
+</header>
+
+<button type="button" class="reset" id="reset">بازگشت به نمای اول</button>
+<p class="hint" id="hint">بکشید تا بچرخد · اسکرول یا دو انگشت برای بزرگ‌نمایی</p>
+
+<div class="overlay" id="loading" role="status" aria-busy="true">
+  <div>
+    <h2>در حال بارگذاری مدل…</h2>
+    <div class="bar" aria-hidden="true"><span id="barFill"></span></div>
+    <p id="loadPct">٪۰</p>
+  </div>
+</div>
+
+<div class="overlay" id="failed" role="alert" hidden>
+  <div>
+    <h2>مدل بارگذاری نشد</h2>
+    <p id="failMsg"></p>
+    <button type="button" class="retry" id="retry">تلاش دوباره</button>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+
+const MODEL = "handpan.glb";
+const $ = (id) => document.getElementById(id);
+const fa = (n) => n.toLocaleString("fa-IR");
+
+const canvas = $("view");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.toneMappingExposure = 0.85;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();   // transparent: the CSS backdrop gradient shows through
+
+// Studio reflections: a dark room with HDR softboxes (same idea as the Cycles preview):
+// a big overhead softbox, two tall strip lights for long streaks on the metal and a warm back rim.
+function studioEnvironment() {
+  const env = new THREE.Scene();
+  env.background = new THREE.Color(0x0d0b09);
+  const panel = (w, h, hex, power, pos) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(power), side: THREE.DoubleSide }));
+    m.position.set(...pos);
+    m.lookAt(0, 0.1, 0);
+    env.add(m);
+  };
+  panel(2.0, 1.2, 0xfff6ea, 3.2, [0, 2.1, -0.1]);       // overhead softbox
+  panel(1.2, 0.8, 0xffeedd, 5.0, [0.95, 1.45, 0.85]);   // key softbox, front right
+  panel(0.12, 1.6, 0xe0ecff, 9.0, [-1.15, 0.65, 0.25]); // strip left (cool)
+  panel(0.12, 1.6, 0xfff2e6, 7.0, [1.25, 0.55, -0.35]); // strip right
+  panel(1.4, 0.25, 0xffd099, 8.0, [-0.2, 0.75, -1.25]); // warm back rim
+  return new THREE.PMREMGenerator(renderer).fromScene(env, 0.02).texture;
+}
+scene.environment = studioEnvironment();
+
+const key = new THREE.DirectionalLight(0xffeedd, 1.6);
+key.position.set(0.9, 1.5, 0.85);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.radius = 6;
+key.shadow.bias = -0.0004;
+Object.assign(key.shadow.camera, { left: -0.5, right: 0.5, top: 0.5, bottom: -0.5, near: 0.5, far: 4 });
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xffc98f, 1.2);
+rim.position.set(-0.2, 0.75, -1.25);
+scene.add(rim);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.ShadowMaterial({ opacity: 0.45 }));
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// soft contact shadow under the instrument
+const shadowTex = (() => {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const g = c.getContext("2d"), grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, "rgba(0,0,0,0.55)"); grd.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 0.75),
+  new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+shadow.rotation.x = -Math.PI / 2;
+shadow.position.y = 0.001;
+scene.add(shadow);
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.01, 20);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.minDistance = 0.35;
+controls.maxDistance = 3;
+controls.target.set(0, 0.11, 0);
+const HOME = new THREE.Vector3(0, 0.78, 1.15);
+
+function frame() {
+  // keep the whole 0.53 m instrument in view on narrow (portrait) screens
+  const k = camera.aspect < 1.2 ? THREE.MathUtils.clamp(1.2 / camera.aspect, 1, 2.6) : 1;
+  camera.position.copy(HOME).multiplyScalar(k);
+  controls.target.set(0, 0.11, 0);
+  controls.update();
+}
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+addEventListener("resize", resize);
+resize();
+frame();
+$("reset").addEventListener("click", frame);
+canvas.addEventListener("pointerdown", () => { $("hint").hidden = true; }, { once: true });
+
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+
+const draco = new DRACOLoader().setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/");
+const loader = new GLTFLoader().setDRACOLoader(draco);
+let model = null;
+function load() {
+  $("failed").hidden = true;
+  $("loading").hidden = false;
+  $("loading").setAttribute("aria-busy", "true");
+  loader.load(MODEL, (gltf) => {
+    if (model) scene.remove(model);
+    model = gltf.scene;
+    model.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.material.envMapIntensity = 1.0; } });
+    scene.add(model);
+    $("loading").hidden = true;
+    $("loading").setAttribute("aria-busy", "false");
+  }, (ev) => {
+    if (ev.total) {
+      const pct = Math.round((ev.loaded / ev.total) * 100);
+      $("barFill").style.width = pct + "%";
+      $("loadPct").textContent = "٪" + fa(pct);
+    }
+  }, (err) => {
+    console.error(err);
+    $("loading").hidden = true;
+    $("failMsg").innerHTML = location.protocol === "file:"
+      ? "مرورگر اجازه نمی‌دهد مدل از فایلِ مستقیم باز شود. این پوشه را با یک وب‌سرور محلی اجرا کنید، مثلاً:<br><code>python -m http.server 8080</code>"
+      : `فایل <code>${MODEL}</code> دریافت نشد. مطمئن شوید کنار همین صفحه است و دوباره امتحان کنید.<br><code>${(err?.message || "network error").replace(/[<>&]/g, "")}</code>`;
+    $("failed").hidden = false;
+  });
+}
+$("retry").addEventListener("click", load);
+load();
+</script>
+</body>
+</html>

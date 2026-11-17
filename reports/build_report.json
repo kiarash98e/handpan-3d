@@ -1,0 +1,165 @@
+{
+  "blender": "5.3.0",
+  "dimensions": {
+    "diameter_m": 0.53,
+    "height_m": 0.2398,
+    "seam_height_m": 0.1078,
+    "gu_diameter_m": 0.124
+  },
+  "triangles": {
+    "Handpan_Body": 23472,
+    "Handpan_RimBand": 2304,
+    "total": 25776
+  },
+  "tone_fields": [
+    {
+      "note": 1,
+      "angle_deg": 270.0,
+      "semi_axes_m": [
+        0.058,
+        0.0452
+      ]
+    },
+    {
+      "note": 2,
+      "angle_deg": 315.0,
+      "semi_axes_m": [
+        0.056,
+        0.0437
+      ]
+    },
+    {
+      "note": 3,
+      "angle_deg": 225.0,
+      "semi_axes_m": [
+        0.054,
+        0.0421
+      ]
+    },
+    {
+      "note": 4,
+      "angle_deg": 0.0,
+      "semi_axes_m": [
+        0.052,
+        0.0406
+      ]
+    },
+    {
+      "note": 5,
+      "angle_deg": 180.0,
+      "semi_axes_m": [
+        0.05,
+        0.039
+      ]
+    },
+    {
+      "note": 6,
+      "angle_deg": 45.0,
+      "semi_axes_m": [
+        0.048,
+        0.0374
+      ]
+    },
+    {
+      "note": 7,
+      "angle_deg": 135.0,
+      "semi_axes_m": [
+        0.046,
+        0.0359
+      ]
+    },
+    {
+      "note": 8,
+      "angle_deg": 90.0,
+      "semi_axes_m": [
+        0.044,
+        0.0343
+      ]
+    }
+  ],
+  "glb": "output\\HANDPAN\\handpan.glb",
+  "glb_bytes": 55140,
+  "preview": [
+    "output\\HANDPAN\\handpan_preview.png",
+    "output\\HANDPAN\\handpan_preview_top.png"
+  ],
+  "blend": "output\\HANDPAN\\handpan.blend",
+  "params": {
+    "shell_radius": 0.262,
+    "band_radius": 0.265,
+    "top_height": 0.114,
+    "bottom_height": 0.115,
+    "dome_exponent": 2.1,
+    "ding_radius": 0.062,
+    "ding_height": 0.018,
+    "ding_field_width": 0.026,
+    "gu_radius": 0.062,
+    "gu_lip_depth": 0.02,
+    "field_ring_radius": 0.17,
+    "field_sizes": [
+      0.058,
+      0.056,
+      0.054,
+      0.052,
+      0.05,
+      0.048,
+      0.046,
+      0.044
+    ],
+    "field_aspect": 0.78,
+    "field_depth": 0.003,
+    "field_groove": 0.001,
+    "dimple_ratio": 0.42,
+    "dimple_depth": 0.0065,
+    "segments": 144,
+    "top_rings": 56,
+    "bottom_rings": 22,
+    "band_profile": [
+      [
+        -0.003,
+        0.012
+      ],
+      [
+        -0.0008,
+        0.0108
+      ],
+      [
+        0.0,
+        0.006
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        -0.006
+      ],
+      [
+        -0.0008,
+        -0.0108
+      ],
+      [
+        -0.003,
+        -0.012
+      ]
+    ],
+    "steel_color": [
+      0.235,
+      0.14,
+      0.068
+    ],
+    "field_rim_dark": 0.5,
+    "dimple_tint": 1.1,
+    "steel_metallic": 0.88,
+    "steel_roughness": 0.4,
+    "band_color": [
+      0.04,
+      0.034,
+      0.03
+    ],
+    "band_metallic": 0.75,
+    "band_roughness": 0.48,
+    "sharp_angle_deg": 48.0
+  }
+}
