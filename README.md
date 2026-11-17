@@ -4,6 +4,8 @@
 
 ![Handpan preview](renders/handpan_preview.png)
 
+**Live 3D viewer:** https://kiarash98e.github.io/handpan-3d/ (served by GitHub Pages from `docs/`)
+
 
 A parametric concept model of a 9-note handpan (a ding plus 8 tone fields), built by script and exported as a Draco GLB.
 
@@ -15,8 +17,8 @@ A parametric concept model of a 9-note handpan (a ding plus 8 tone fields), buil
 |---|---|
 | `scripts/build_handpan.py` | The parametric build: geometry, materials, GLB export, preview renders and `.blend` |
 | `scripts/verify_handpan_glb.py` | Reopens the GLB in an empty Blender scene and checks it |
-| `web/handpan.glb` | The model for the web: 2 meshes, 2 materials, Draco compression, **53.8 KB** (55,140 bytes) |
-| `web/index.html` | A minimal three.js 0.160 viewer: orbit, zoom, a reset button, studio lighting with soft shadows, loading and error states |
+| `docs/handpan.glb` | The model for the web: 2 meshes, 2 materials, Draco compression, **53.8 KB** (55,140 bytes) |
+| `docs/index.html` | A minimal three.js 0.160 viewer: orbit, zoom, a reset button, studio lighting with soft shadows, loading and error states |
 | `renders/handpan_preview.png`, `renders/handpan_preview_top.png` | Cycles preview renders, 1400×1000, 96 samples, denoised: a 3/4 hero view and a top view |
 | `blender/handpan.blend` | The built scene, including the preview studio (floor, lights, camera) |
 | `reports/build_report.json` | Dimensions, triangle counts, tone-field layout and all parameters as measured by the build |
@@ -66,7 +68,7 @@ The web viewer copies the same layout. It builds an HDR environment from the sam
 
 ## Regenerate
 
-Run these from the repository root. You need Blender 5.3 (adjust the path to your install). Outputs go to `output/HANDPAN/` unless you pass `--out`; copy the GLB into `web/` to update the viewer.
+Run these from the repository root. You need Blender 5.3 (adjust the path to your install). Outputs go to `output/HANDPAN/` unless you pass `--out`; copy the GLB into `docs/` to update the viewer.
 
 ```bash
 "C:/Program Files/Blender Foundation/Blender 5.3/blender.exe" --background --factory-startup --python scripts/build_handpan.py
@@ -88,7 +90,7 @@ The viewer must be served over HTTP, because opening the file directly is blocke
 uv run python -m http.server 8811 --bind 127.0.0.1
 ```
 
-Run this inside `web/`, then open http://127.0.0.1:8811/. The viewer loads three.js and the Draco decoder from jsDelivr, so it needs an internet connection.
+Run this inside `docs/`, then open http://127.0.0.1:8811/. The viewer loads three.js and the Draco decoder from jsDelivr, so it needs an internet connection.
 
 ## Verification done (2026-11-17)
 
